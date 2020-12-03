@@ -1,10 +1,3 @@
-# from operator import attrgetter
-
-# import self as self
-import operator
-from typing import Any
-
-
 class People:
 
     def __init__(self, name, surname, gender, age):
@@ -53,48 +46,38 @@ class Book:
         return self.isInLib
 
     def getFullNameBook(self):
-        return "id= %d %s %s %s %d" % (self.id, self.namebook, self.author, self.Publishing, self.yearPublishing)
+        return "%d %s %s %s %d" % (self.id, self.namebook, self.author, self.Publishing, self.yearPublishing)
 
     def __str__(self):
         return "%d %s %s %s %d" % (self.id, self.namebook, self.author, self.Publishing, self.yearPublishing)
-
-    def __repr__(self):
-        return repr("%d %s %s %s %d" % (self.id, self.namebook, self.author, self.Publishing, self.yearPublishing))
 
 
 class Library1:
 
     def __init__(self):
-        self.readerList = []
         self.listBooks = []  # список книг
-        self.listPeople = []  # список посетителей
+        # self.listPeople = []  # список посетителей
 
     def add_Book(self, book):  # добавить книгу
         self.listBooks.append(book)
 
     def delete_Book(self, bookObj):  # удалить книгу
-        for book in self.listBooks:
-            if book == bookObj:
-                self.listBooks.remove(bookObj)
-            # continue
-            else:
-                print('Данной книги в библиотеке нет!')
-        #  break
+        if bookObj in self.listBooks:
+            self.listBooks.remove(bookObj)
+        else:
+            print("Данной книги в библиотеке нет!")
 
     def give_Book(self, peopleObj, bookObj):  # отдать книгу читателю
-        for book in self.listBooks:
-            if book == bookObj:
-                peopleObj.addBookToReaderList(book)  # добавляем книгу  в список читателя
-                book.setBookInLib(False)
-                print("книга " + bookObj.namebook + " отдана читателю " + peopleObj.name + " " + peopleObj.surname)
+        if bookObj in self.listBooks:
+            peopleObj.addBookToReaderList(bookObj)  # добавляем книгу  в список читателя
+            bookObj.setBookInLib(False)
+            print("Книга %s, отдана читателю %s %s" % (bookObj.namebook, peopleObj.surname, peopleObj.name))
 
     def accept_Book(self, peopleObj1, bookObj1):  # принять книгу  от читателя
-        for book in peopleObj1.readerList:
-            if book == bookObj1:
-                peopleObj1.deleteBookFromReaderList(book)
-                bookObj1.setBookInLib(True)
-                print(
-                    "книга " + bookObj1.namebook + " забрана у читателя " + peopleObj1.name + " " + peopleObj1.surname)
+        if bookObj1 in peopleObj1.readerList:
+            peopleObj1.deleteBookFromReaderList(bookObj1)
+            bookObj1.setBookInLib(True)
+            print("Книга %s, получена от читателя %s %s" % (bookObj1.namebook, peopleObj1.surname, peopleObj1.name))
 
     def displayBibleBook(self):  # вывести список  всех книг в библиотеке
         print("Список всех книг: ")
@@ -111,31 +94,27 @@ class Library1:
     def displayAvailableBooks(self):  # вывести список книг   в наличии
         print("Список книг в наличии: ")
         for book in self.listBooks:
-            # if book.getBookInLib() == True:
             if book.getBookInLib():
                 print(str(book))
 
-    def sortList(self, list_x, i):
-        sorted(list_x, key=lambda t: t[i])
-    # sorted(str(book), key=operator.itemgetter(i))
-
-
-# def sort_Books(self, list_x):
-
-
-#   print(sorted(list_x, key=lambda list: list.namebook))
+    def sortList(self, key): # Сортировка listBooks
+        if key == 'namebook':
+            self.listBooks.sort(key=lambda t: t.namebook)
+        elif key == 'yearPublishing':
+            self.listBooks.sort(key=lambda t: t.yearPublishing)
+        else:
+            print('Error! No key!')
 
 
 people_1 = People('Igor', 'Kudrya', 'male', 46)
 people_2 = People('Svitlana', 'Perley', 'female', 36)
 print(people_1.getFullName(), '\n', people_2.getFullName())
-
-
+print("====================================")
 book1 = Book(2234, "'Улісс',", "Дж.Джойс:", "Дніпро,", 1930)
 book2 = Book(3234, "'Безсоння',", "С.Кінг:", "Вашингтон,", 1980)
 book3 = Book(1234, "'Старий і море',", "Гемінгвей:", "Нью-Йорк,", 1923)
 print(book1.getFullNameBook(), '\n', book2.getFullNameBook())
-
+print("====================================")
 lib1 = Library1()
 lib1.add_Book(book1)
 lib1.add_Book(book2)
@@ -149,18 +128,26 @@ print("====================================")
 lib1.displayNotInLibBook()
 print("====================================")
 lib1.displayAvailableBooks()
-
+print("====================================")
 lib1.accept_Book(people_2, book2)
-
+print("====================================")
 lib1.displayBibleBook()
 print("====================================")
 lib1.displayNotInLibBook()
 print("====================================")
 lib1.displayAvailableBooks()
 
-# print(sorted(lib1.listBooks, key=lambda p: p[0]))
-lib1.sortList(lib1.readerList, 0)  # не работает без сообщения об ошибке
-lib1.displayBibleBook()  # не работает без сообщения об ошибке
+'''
+id
+namebook
+author
+Publishing
+yearPublishing
+'''
+print("====================================")
+lib1.sortList('namebook')
+lib1.displayBibleBook()
 
-# lib1.sortList(lib1.listBooks, 0)  # не работает  сообщением об ошибке
-# lib1.displayBibleBook()
+print("====================================")
+lib1.sortList('yearPublishing')
+lib1.displayBibleBook()
